@@ -1,0 +1,145 @@
+lumiere/
+├── prisma
+│   ├── schema.prisma
+│   └── seed.ts
+├── src
+│   ├── app
+│   │   ├── (policy)
+│   │   │   ├── privacy-policy
+│   │   │   │   └── page.tsx
+│   │   │   ├── refund-policy
+│   │   │   │   └── page.tsx
+│   │   │   ├── shipping-policy
+│   │   │   │   └── page.tsx
+│   │   │   └── terms
+│   │   │       └── page.tsx
+│   │   ├── about
+│   │   │   └── page.tsx
+│   │   ├── account
+│   │   │   ├── addresses
+│   │   │   │   └── page.tsx
+│   │   │   ├── invoices
+│   │   │   │   └── page.tsx
+│   │   │   ├── login
+│   │   │   │   └── page.tsx
+│   │   │   ├── orders
+│   │   │   │   └── page.tsx
+│   │   │   ├── register
+│   │   │   │   └── page.tsx
+│   │   │   ├── rewards
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── admin
+│   │   │   ├── analytics
+│   │   │   │   └── page.tsx
+│   │   │   ├── coupons
+│   │   │   │   └── page.tsx
+│   │   │   ├── customers
+│   │   │   │   └── page.tsx
+│   │   │   ├── orders
+│   │   │   │   └── page.tsx
+│   │   │   ├── products
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── api
+│   │   │   ├── auth
+│   │   │   │   ├── [...nextauth]
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── register
+│   │   │   │       └── route.ts
+│   │   │   ├── cart
+│   │   │   │   └── route.ts
+│   │   │   ├── checkout
+│   │   │   │   ├── paypal
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── stripe
+│   │   │   │       └── route.ts
+│   │   │   ├── coupons
+│   │   │   │   └── validate
+│   │   │   │       └── route.ts
+│   │   │   ├── newsletter
+│   │   │   │   └── route.ts
+│   │   │   ├── products
+│   │   │   │   └── route.ts
+│   │   │   ├── reviews
+│   │   │   │   └── route.ts
+│   │   │   ├── webhooks
+│   │   │   │   └── stripe
+│   │   │   │       └── route.ts
+│   │   │   └── wishlist
+│   │   │       └── route.ts
+│   │   ├── blog
+│   │   │   ├── [slug]
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── cart
+│   │   │   └── page.tsx
+│   │   ├── checkout
+│   │   │   └── page.tsx
+│   │   ├── collections
+│   │   │   └── page.tsx
+│   │   ├── compare
+│   │   │   └── page.tsx
+│   │   ├── contact
+│   │   │   └── page.tsx
+│   │   ├── faqs
+│   │   │   └── page.tsx
+│   │   ├── product
+│   │   │   └── [slug]
+│   │   │       └── page.tsx
+│   │   ├── shop
+│   │   │   └── page.tsx
+│   │   ├── support
+│   │   │   └── page.tsx
+│   │   ├── wishlist
+│   │   │   └── page.tsx
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── not-found.tsx
+│   │   ├── page.tsx
+│   │   ├── robots.ts
+│   │   └── sitemap.ts
+│   ├── components
+│   │   ├── admin
+│   │   │   └── RevenueChart.tsx
+│   │   ├── home
+│   │   │   ├── FeaturedCollections.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   └── ProductRail.tsx
+│   │   ├── layout
+│   │   │   ├── CartDrawer.tsx
+│   │   │   ├── CustomCursor.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── LoadingScreen.tsx
+│   │   │   └── Navbar.tsx
+│   │   ├── product
+│   │   │   ├── AddToCartPanel.tsx
+│   │   │   ├── NotesPyramid.tsx
+│   │   │   └── ProductCard.tsx
+│   │   ├── shop
+│   │   │   └── ShopFilters.tsx
+│   │   ├── three
+│   │   │   ├── Bottle.tsx
+│   │   │   └── BottleScene.tsx
+│   │   └── PolicyLayout.tsx
+│   ├── lib
+│   │   ├── auth.ts
+│   │   ├── prisma.ts
+│   │   ├── products.ts
+│   │   ├── stripe.ts
+│   │   └── utils.ts
+│   ├── store
+│   │   ├── cart-store.ts
+│   │   ├── compare-store.ts
+│   │   └── wishlist-store.ts
+│   ├── types
+│   │   └── index.ts
+│   └── middleware.ts
+├── .env.example
+├── README.md
+├── next.config.mjs
+├── package.json
+├── postcss.config.mjs
+├── tailwind.config.ts
+└── tsconfig.json

@@ -1,0 +1,63 @@
+This isn't a bug in the code — it's expected, since the app needs an actual Postgres database to talk to, and right now nothing is listening on localhost:5432. The DATABASE_URL in .env.example was just a placeholder assuming you'd have Postgres running locally.
+
+You have two straightforward paths:
+
+Which do you want to set up?
+give me all of these how can i do them all
+
+Here's all three. Pick whichever fits your setup — you only need one, but I'll give you complete steps for each.
+
+Option 1: Free cloud Postgres (Neon) — fastest, no install
+Go to https://neon.tech, sign up free, create a new project.
+Neon shows a connection string immediately — copy it. It looks like:
+   postgresql://user:password@ep-something.us-east-2.aws.neon.tech/neondb?sslmode=require
+Open your project's .env file and paste it in:
+   DATABASE_URL="postgresql://user:password@ep-something.us-east-2.aws.neon.tech/neondb?sslmode=require"
+Push the schema and seed:
+bash
+   npx prisma db push
+   npm run db:seed
+   npm run dev
+
+(Supabase works the same way — Project Settings → Database → Connection String, choose "URI" mode, use the pooled connection string.)
+
+Option 2: Local Postgres via Docker
+Install Docker Desktop if you don't have it: https://www.docker.com/products/docker-desktop
+Run a Postgres container:
+bash
+   docker run --name lumiere-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=lumiere -p 5432:5432 -d postgres:16
+In .env:
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/lumiere?schema=public"
+Same as above:
+bash
+   npx prisma db push
+   npm run db:seed
+   npm run dev
+To stop/start it later: docker stop lumiere-postgres / docker start lumiere-postgres.
+Option 3: Postgres installed directly on Windows
+Download the installer: https://www.postgresql.org/download/windows/ (use the EDB installer).
+Run it. When prompted, set a password for the postgres superuser — remember it. Keep the default port 5432.
+After install, open pgAdmin (installed alongside) or psql and create a database:
+sql
+   CREATE DATABASE lumiere;
+
+Or via command line (Start Menu → SQL Shell (psql)), then:
+
+   CREATE DATABASE lumiere;
+In .env, using the password you set:
+   DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/lumiere?schema=public"
+Then:
+bash
+   npx prisma db push
+   npm run db:seed
+   npm run dev
+
+My actual recommendation: go with Option 1 (Neon). It takes about 90 seconds, needs no local install, won't fight with Windows permissions/services, and is what you'd use in production anyway — so you're not throwing away setup work later.
+
+Once DATABASE_URL points at a real, reachable database and npx prisma db push runs without error, the Can't reach database server error will disappear and npm run dev will serve the seeded products.
+------------------------------------------------------------------------------
+Issue 1: The 3D crash (real bug)
+npm install @react-three/fiber@^9.1.0 @react-three/drei@^9.114.3 --save-exact=false
+
+
+Issue 2: Missing images (not a bug — just missing files)
