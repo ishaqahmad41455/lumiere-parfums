@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCartStore } from "@/store/cart-store";
 import { formatPrice } from "@/lib/utils";
+import { PakRedirectForm } from "@/components/checkout/PakRedirectForm";
 
 const shippingSchema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -21,9 +22,22 @@ type ShippingForm = z.infer<typeof shippingSchema>;
 
 const STEPS = ["Shipping", "Payment", "Review"] as const;
 
+type PaymentMethod = "stripe" | "paypal" | "jazzcash" | "easypaisa" | "bank_transfer";
+
+const PAYMENT_OPTIONS: { id: PaymentMethod; label: string; hint?: string }[] = [
+  { id: "stripe", label: "Credit / Debit Card (Stripe)" },
+  { id: "paypal", label: "PayPal" },
+  { id: "jazzcash", label: "JazzCash", hint: "Mobile wallet" },
+  { id: "easypaisa", label: "EasyPaisa", hint: "Mobile wallet" },
+  { id: "bank_transfer", label: "Bank Transfer", hint: "HBL, UBL, MCB, Meezan & more" },
+];
+
 export default function CheckoutPage() {
   const [step, setStep] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "paypal">("stripe");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("jazzcash");
+  const [redirect, setRedirect] = useState<{ endpoint: string; fields: Record<string, string> } | null>(null);
+  const [placing, setPlacing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { items, subtotal, clear } = useCartStore();
   const {
     register,
@@ -37,17 +51,65 @@ export default function CheckoutPage() {
   const total = subtotal() + shipping + tax;
 
   async function placeOrder() {
-    // In production this calls /api/checkout/stripe or /api/checkout/paypal
-    // to create a PaymentIntent / Order, then confirms payment client-side.
-    const res = await fetch("/api/checkout/" + paymentMethod, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items, shipping: getValues(), total }),
-    });
-    if (res.ok) {
+    setError(null);
+    setPlacing(true);
+    try {
+      // JazzCash and EasyPaisa hand back an HTML-form POST target instead
+      // of a redirect URL, so those two are handled differently from
+      // Stripe/PayPal/bank transfer.
+      if (paymentMethod === "jazzcash" || paymentMethod === "easypaisa") {
+        const res = await fetch(`/api/checkout/${paymentMethod}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items, shipping: getValues(), total }),
+        });
+        if (!res.ok) throw new Error("Could not start payment. Please try again.");
+        const data = await res.json();
+        clear();
+        setRedirect({ endpoint: data.endpoint, fields: data.fields });
+        return;
+      }
+
+      if (paymentMethod === "bank_transfer") {
+        const res = await fetch("/api/checkout/bank-transfer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items, shipping: getValues(), total }),
+        });
+        if (!res.ok) throw new Error("Could not place order. Please try again.");
+        clear();
+        window.location.href = "/account/orders?pending=bank_transfer";
+        return;
+      }
+
+      const res = await fetch("/api/checkout/" + paymentMethod, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, shipping: getValues(), total }),
+      });
+      if (!res.ok) throw new Error("Could not place order. Please try again.");
+      const data = await res.json();
       clear();
-      window.location.href = "/account/orders";
+      window.location.href = data.url ?? "/account/orders";
+    } catch (e: any) {
+      setError(e.message ?? "Something went wrong.");
+    } finally {
+      setPlacing(false);
     }
+  }
+
+  // Once JazzCash/EasyPaisa fields come back, render the auto-submitting
+  // hidden form that ships the browser off to the wallet's hosted page.
+  if (redirect) {
+    return (
+      <div className="container flex min-h-[60vh] flex-col items-center justify-center gap-4 pt-32 pb-24 text-center">
+        <p className="eyebrow text-gold">Redirecting to secure payment…</p>
+        <p className="text-sm text-noir/60 dark:text-cream/60">
+          Please wait while we take you to complete your payment.
+        </p>
+        <PakRedirectForm endpoint={redirect.endpoint} fields={redirect.fields} />
+      </div>
+    );
   }
 
   return (
@@ -94,11 +156,15 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="mb-1 block text-sm">Country</label>
-                <input {...register("country")} className="glass-light w-full rounded-md px-3 py-2" />
+                <input {...register("country")} defaultValue="Pakistan" className="glass-light w-full rounded-md px-3 py-2" />
               </div>
               <div>
                 <label className="mb-1 block text-sm">Phone</label>
-                <input {...register("phone")} className="glass-light w-full rounded-md px-3 py-2" />
+                <input
+                  {...register("phone")}
+                  placeholder="03XXXXXXXXX"
+                  className="glass-light w-full rounded-md px-3 py-2"
+                />
               </div>
             </div>
             <button type="submit" className="mt-4 rounded-full bg-gold py-3 eyebrow text-noir">
@@ -110,26 +176,30 @@ export default function CheckoutPage() {
         {step === 1 && (
           <div className="max-w-lg">
             <div className="flex flex-col gap-3">
-              {(["stripe", "paypal"] as const).map((m) => (
+              {PAYMENT_OPTIONS.map((m) => (
                 <label
-                  key={m}
+                  key={m.id}
                   className={`glass-light flex cursor-pointer items-center justify-between rounded-md px-4 py-3 ${
-                    paymentMethod === m ? "border border-gold" : ""
+                    paymentMethod === m.id ? "border border-gold" : ""
                   }`}
                 >
-                  <span className="capitalize">{m === "stripe" ? "Credit / Debit Card (Stripe)" : "PayPal"}</span>
+                  <span>
+                    {m.label}
+                    {m.hint && <span className="ml-2 text-xs text-noir/50 dark:text-cream/50">{m.hint}</span>}
+                  </span>
                   <input
                     type="radio"
                     name="payment"
-                    checked={paymentMethod === m}
-                    onChange={() => setPaymentMethod(m)}
+                    checked={paymentMethod === m.id}
+                    onChange={() => setPaymentMethod(m.id)}
                   />
                 </label>
               ))}
             </div>
             <p className="mt-3 text-xs text-noir/50 dark:text-cream/50">
-              Apple Pay and Google Pay are available automatically at checkout when
-              supported by your browser and card network via Stripe.
+              JazzCash and EasyPaisa take you to their secure payment page to
+              confirm with your mobile wallet PIN. Bank transfer orders ship
+              once payment is confirmed by our team.
             </p>
             <button onClick={() => setStep(2)} className="mt-6 rounded-full bg-gold px-8 py-3 eyebrow text-noir">
               Review Order
@@ -143,8 +213,13 @@ export default function CheckoutPage() {
               Confirm your details and place your order. You'll receive an email
               confirmation immediately after payment succeeds.
             </p>
-            <button onClick={placeOrder} className="rounded-full bg-gold px-8 py-3 eyebrow text-noir">
-              Place Order — {formatPrice(total)}
+            {error && <p className="mb-4 text-sm text-bordeaux">{error}</p>}
+            <button
+              onClick={placeOrder}
+              disabled={placing}
+              className="rounded-full bg-gold px-8 py-3 eyebrow text-noir disabled:opacity-50"
+            >
+              {placing ? "Placing Order…" : `Place Order — ${formatPrice(total)}`}
             </button>
           </div>
         )}

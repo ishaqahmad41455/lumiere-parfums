@@ -294,6 +294,8 @@ enum PaymentProvider {
   GOOGLE_PAY
   BANK_TRANSFER
   COD
+  JAZZCASH
+  EASYPAISA
 }
 
 model Order {
