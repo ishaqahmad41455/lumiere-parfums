@@ -353,6 +353,33 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../src/app/api/checkout/bank-transfer/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/checkout/bank-transfer">> = Specific
+  const handler = {} as typeof import("../../src/app/api/checkout/bank-transfer/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/checkout/easypaisa/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/checkout/easypaisa">> = Specific
+  const handler = {} as typeof import("../../src/app/api/checkout/easypaisa/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/checkout/jazzcash/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/checkout/jazzcash">> = Specific
+  const handler = {} as typeof import("../../src/app/api/checkout/jazzcash/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/api/checkout/paypal/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/checkout/paypal">> = Specific
@@ -402,6 +429,24 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/reviews">> = Specific
   const handler = {} as typeof import("../../src/app/api/reviews/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/webhooks/easypaisa/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/webhooks/easypaisa">> = Specific
+  const handler = {} as typeof import("../../src/app/api/webhooks/easypaisa/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/api/webhooks/jazzcash/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/webhooks/jazzcash">> = Specific
+  const handler = {} as typeof import("../../src/app/api/webhooks/jazzcash/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

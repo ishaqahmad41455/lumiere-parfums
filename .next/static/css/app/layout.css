@@ -1008,6 +1008,9 @@ video {
 .mb-8 {
   margin-bottom: 2rem;
 }
+.ml-2 {
+  margin-left: 0.5rem;
+}
 .mt-1 {
   margin-top: 0.25rem;
 }
@@ -1104,6 +1107,9 @@ video {
 }
 .h-px {
   height: 1px;
+}
+.min-h-\[60vh\] {
+  min-height: 60vh;
 }
 .min-h-\[80vh\] {
   min-height: 80vh;
@@ -1834,6 +1840,10 @@ h1, h2, h3, h4, .font-display {
 
 .disabled\:opacity-40:disabled {
   opacity: 0.4;
+}
+
+.disabled\:opacity-50:disabled {
+  opacity: 0.5;
 }
 
 .group:hover .group-hover\:scale-105 {
