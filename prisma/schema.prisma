@@ -1,10 +1,10 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ==================== USERS & AUTH ====================
@@ -294,8 +294,6 @@ enum PaymentProvider {
   GOOGLE_PAY
   BANK_TRANSFER
   COD
-  JAZZCASH
-  EASYPAISA
 }
 
 model Order {
