@@ -1,15 +1,12 @@
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { getProductBySlug, getBestSellers } from "@/lib/products";
 import { AddToCartPanel } from "@/components/product/AddToCartPanel";
 import { NotesPyramid } from "@/components/product/NotesPyramid";
 import { ProductRail } from "@/components/home/ProductRail";
 
-const BottleScene = dynamic(
-  () => import("@/components/three/BottleScene").then((m) => m.BottleScene),
-  { ssr: false }
-);
+
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -71,7 +68,7 @@ export default async function ProductPage({ params }: PageProps) {
 
       <div className="container grid gap-12 pb-20 md:grid-cols-2">
         <div className="sticky top-28 h-[70vh] rounded-lg bg-gradient-to-b from-noir/5 to-transparent">
-          <BottleScene interactive className="h-full w-full" />
+          {/* <BottleScene interactive className="h-full w-full" /> */}
           <p className="mt-2 text-center text-xs text-noir/40 dark:text-cream/40">
             Drag to rotate · Scroll to zoom
           </p>
